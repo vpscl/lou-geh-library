@@ -1,32 +1,84 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 
-nav {
-  padding: 30px;
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+  ::-webkit-scrollbar {
+    width: 0.45rem;
+    height: 0.45rem;
+  }
 
-    &.router-link-exact-active {
-      color: #42b983;
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(190, 190, 190);
+    border-radius: 20px;
+
+  }
+
+  ::-webkit-scrollbar-thumb {
+    &:active {
+      background: rgb(173, 173, 173);
+
     }
   }
+
+  &::before,
+  &::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
+
+
+
+html,
+body,
+#app,
+.wrapper {
+  // background: #F5F5F9;
+  background: #f3f5fa;
+  height: 100%;
+}
+
+
+
+a,
+.router-link {
+  text-decoration: none;
+  color: black;
+
+  &:hover {
+    color: black !important;
+  }
+}
+
+main {
+  margin-left: 90px;
+  padding: 20px;
+}
+
+.wrapper {
+  overflow-x: hidden;
+}
+
+
+
+@media (min-width: 1024px) {
+  main {
+    padding: 20px 8%;
+  }
+
 }
 </style>

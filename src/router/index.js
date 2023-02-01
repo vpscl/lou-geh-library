@@ -1,29 +1,71 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: "/",
+    name: "home",
+    redirect: { name: "search" },
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+    path: "/login",
+    name: "login",
+    component: () => import("../views/LoginView.vue"),
+  },
+  {
+    path: "/reader/:id?",
+    name: "reader",
+    component: () => import("../views/reader/ReaderView.vue"),
+    redirect: { name: "search" },
+    children: [
+      {
+        path: "/reader/search",
+        name: "search",
+        component: () => import("../views/reader/SearchBooksView.vue"),
+      },
+    ],
+  },
+  {
+    path: "/:id?",
+    name: "librarian",
+    component: () => import("../views/librarian/LibrarianView.vue"),
+    redirect: { name: "books" },
+    children: [
+      {
+        path: "/books",
+        name: "books",
+        component: () => import("../views/librarian/BooksView.vue"),
+      },
+      {
+        path: "/issued-books",
+        name: "issued-books",
+        component: () => import("../views/librarian/IssuedBooksView.vue"),
+      },
+      {
+        path: "/publishers",
+        name: "publishers",
+        component: () => import("../views/librarian/PublishersView.vue"),
+      },
+      {
+        path: "/categories",
+        name: "categories",
+        component: () => import("../views/librarian/CategoriesView.vue"),
+      },
+      {
+        path: "/requests",
+        name: "requests",
+        component: () => import("../views/librarian/RequestsView.vue"),
+      },
+    ],
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
