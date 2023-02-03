@@ -7,7 +7,7 @@ const apiClient = axios.create({
     "Content-Type": "application/json",
 
     Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjc1MjE4MTg2LCJleHAiOjE2NzUzMDQ1ODZ9.OG9l-qZIqzLeT4ARVShpnU9vJsruKLuTXVvltrivZJI",
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjc1MzkxNjgxLCJleHAiOjE2NzU0NzgwODF9.cu67ItInlVBlRoMlYgOft5ZLiKTa0KVE3nd9HaU0-OY",
   },
 });
 
@@ -24,9 +24,6 @@ export default {
   getPublishers() {
     return apiClient.get("/publishers");
   },
-  getReaders() {
-    return apiClient.get("/reader");
-  },
   getRequests() {
     return apiClient.get("/request");
   },
@@ -39,10 +36,37 @@ export default {
   postCategory(category) {
     return apiClient.post("/category", category);
   },
-  postReader(reader) {
-    return apiClient.post("/reader", reader);
+  postIssuedBook(issuedBook) {
+    return apiClient.post("/issued_books", issuedBook);
   },
-  deleteBook(book) {
-    return apiClient.patch("/books", book);
+  postRequest(request) {
+    return apiClient.post("/request", request);
+  },
+  removeBook(isbn) {
+    return apiClient.patch(`/books/delete/${isbn}`);
+  },
+  removePublisher(publisher_id) {
+    return apiClient.patch(`/publishers/delete/${publisher_id}`);
+  },
+  removeCategory(category_id) {
+    return apiClient.patch(`/category/delete/${category_id}`);
+  },
+  removeRequest(request_id) {
+    return apiClient.patch(`/request/delete/${request_id}`);
+  },
+  updateBook(isbn, book) {
+    return apiClient.patch(`/books/${isbn}`, book);
+  },
+  updatePublisher(publisher_id, publisher) {
+    return apiClient.patch(`/publishers/${publisher_id}`, publisher);
+  },
+  updateCategory(category_id, category) {
+    return apiClient.patch(`/category/${category_id}`, category);
+  },
+  updateIssuedBook(issuedBook_id, issuedBook) {
+    return apiClient.patch(`/issued_books/${issuedBook_id}`, issuedBook);
+  },
+  login(user) {
+    return apiClient.post("/users/login", user);
   },
 };

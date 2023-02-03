@@ -37,7 +37,6 @@
                         <b-button size="sm" @click="row.toggleDetails" variant="outline-secondary" class="mr-2">
                             {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
                         </b-button>
-
                     </template>
 
                     <!-- <template #cell(author)="row">
@@ -54,7 +53,8 @@
 
                                     <AppDropdown>
                                         <template v-slot:text>
-                                            <b-icon icon="three-dots-vertical"></b-icon>
+                                            <b-icon @click="getSelectedBook(row.item.isbn)"
+                                                icon="three-dots-vertical"></b-icon>
                                         </template>
                                         <template v-slot:links>
                                             <li>
@@ -64,16 +64,22 @@
                                                     Update
                                                 </a>
                                             </li>
-                                            <li><a v-b-modal.removeBookModal
+                                            <li v-if="row.item.status == 'active'"><a v-b-modal.removeBookModal
                                                     class="dropdown-item d-flex align-items-center py-2" href="#">
-                                                    <b-icon icon="trash" class="mr-2" font-scale=".95"></b-icon>
-                                                    Remove
+                                                    <b-icon icon="x-octagon" class="mr-2" font-scale=".95"></b-icon>
+                                                    Mark as inactive
+                                                </a>
+                                            </li>
+                                            <li v-else-if="row.item.status == 'inactive'"><a
+                                                    @click="editBook(selectedIsbn, updateBook)"
+                                                    class="dropdown-item d-flex align-items-center py-2" href="#">
+                                                    <b-icon icon="check2-circle" class="mr-2" font-scale=".95"></b-icon>
+                                                    Mark as active
                                                 </a>
                                             </li>
                                         </template>
                                     </AppDropdown>
 
-                                    <!-- <b-icon @click="row.toggleDetails" class="h6 mt-1" icon="x-lg"></b-icon> -->
 
                                 </div>
 
@@ -104,7 +110,16 @@
                                         row.item.no_of_copies
                                     }}</b-list-group-item>
                                     <b-list-group-item><b>Shelf:</b> {{ row.item.shelf }}</b-list-group-item>
-                                    <b-list-group-item><b>Status:</b> {{ row.item.status }}</b-list-group-item>
+                                    <b-list-group-item><b>Status:</b>
+                                        <b-badge pill v-if="row.item.status == 'active'" variant="success"
+                                            class="ml-2 text-white">{{
+                                                row.item.status
+                                            }}</b-badge>
+                                        <b-badge pill v-if="row.item.status == 'inactive'" variant="warning"
+                                            class="ml-2 text-white">{{
+                                                row.item.status
+                                            }}</b-badge>
+                                    </b-list-group-item>
 
                                 </b-list-group>
 
@@ -113,28 +128,109 @@
 
                         </b-card>
 
-                        <AppModal modalId="removeBookModal" modalSize="lg" hideFooter>
-                            <template #modal-header>
-                                Delete Book
-                            </template>
-                            <template #modal-body>
-                                <div class="row mb-3 text-center">
-                                    Are you sure you want to remove <b>{{ row.item.isbn }}</b>?
-                                </div>
-                                <b-button @click="deleteBook(row.item.isbn)">yes</b-button>
-                            </template>
-                            <template #modal-btn>
-                                <b-button variant="primary">
-                                    Update
-                                </b-button>
-                            </template>
-                        </AppModal>
+
+
+
+
                     </template>
 
                 </b-table>
 
                 <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" aria-controls="my-table"
                     class="mt-3 mb-0 justify-content-center"></b-pagination>
+
+
+                <AppModal modalId="updateBookModal" modalSize="lg" hideFooter :key="modalKey">
+                    <template #modal-header>
+                        Update Book
+                    </template>
+                    <template #modal-body>
+                        <form @submit.prevent="editBook(selectedIsbn, updateBook)">
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label for="title">Title</label>
+                                    <b-form-input v-model="updateBook.title" id="title"></b-form-input>
+                                </div>
+                                <div class="col-6">
+                                    <label for="ISBN">ISBN</label>
+                                    <b-form-input v-model="updateBook.isbn" id="isbn"></b-form-input>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="description">Description</label>
+                                    <b-form-textarea id="description" v-model="updateBook.description" rows="3"
+                                        max-rows="6"></b-form-textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label for="author">Author</label>
+                                    <b-form-input v-model="updateBook.author" id="author"></b-form-input>
+                                </div>
+                                <div class="col-6">
+                                    <label for="publisher">Publisher</label>
+                                    <b-form-select v-model="updateBook.p_publisher_id">
+                                        <b-form-select-option value="" disabled>Select</b-form-select-option>
+                                        <b-form-select-option v-for="publisher in activePublishers"
+                                            :key="publisher.publisher_id" :value="publisher.publisher_id">{{
+                                                publisher.publisher_name
+                                            }}</b-form-select-option>
+                                    </b-form-select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-3">
+                                    <label for="publication_year">Publication Year</label>
+                                    <b-form-input v-model="updateBook.publication_year"
+                                        id="publication_year"></b-form-input>
+                                </div>
+                                <div class="col-3">
+                                    <label for="no_of_copies">No. of Copies</label>
+                                    <b-form-input v-model.number="updateBook.no_of_copies" type="number"
+                                        id="no_of_copies"></b-form-input>
+                                </div>
+                                <div class="col-3">
+                                    <label for="shelf">Shelf</label>
+                                    <b-form-input v-model.number="updateBook.shelf" type="number"
+                                        id="shelf"></b-form-input>
+                                </div>
+                                <div class="col-3">
+                                    <label for="no_of_pages">No. of Pages</label>
+                                    <b-form-input v-model.number="updateBook.no_of_pages" type="number"
+                                        id="no_of_pages"></b-form-input>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <label for="categories">Categories</label>
+                                    <!-- <multiselect v-model="book.c_category_id" :options="cats" :multiple="true"
+                                    group-values="subcategories" group-label="category_name"
+                                    placeholder="Type to search">
+                                    <span slot="noResult">Oops! No elements found. Consider changing the search
+                                        query.</span>
+                                </multiselect> -->
+                                    <b-form-select v-model="updateBook.c_category_id">
+                                        <b-form-select-option value="" disabled>Select</b-form-select-option>
+                                        <b-form-select-option v-for="category in activeCategories"
+                                            :key="category.category_id" :value="category.category_id">{{
+                                                category.category_name
+                                            }}</b-form-select-option>
+                                    </b-form-select>
+                                </div>
+                            </div>
+
+                            <div class="w-100 mt-4 d-flex justify-content-end">
+                                <b-button variant="outline-secondary" class="mr-2" @click="rerenderModal()">
+                                    Cancel
+                                </b-button>
+                                <b-button type="submit" variant="primary">
+                                    Update
+                                </b-button>
+                            </div>
+                        </form>
+                    </template>
+                </AppModal>
             </div>
 
             <AppModal :key="modalKey" modalId="addBookModal" modalSize="lg" submitMethod="addBook" hideFooter>
@@ -156,7 +252,6 @@
                         <div class="row mb-3">
                             <div class="col-12">
                                 <label for="description">Description</label>
-                                <!-- <b-form-input v-model="book.title" id="description"></b-form-input> -->
                                 <b-form-textarea id="description" v-model="book.description" rows="3"
                                     max-rows="6"></b-form-textarea>
                             </div>
@@ -168,10 +263,9 @@
                             </div>
                             <div class="col-6">
                                 <label for="publisher">Publisher</label>
-                                <!-- <b-form-input v-model="book.publisher" id="publisher"></b-form-input> -->
                                 <b-form-select v-model="book.p_publisher_id">
                                     <b-form-select-option value="" disabled>Select</b-form-select-option>
-                                    <b-form-select-option v-for="publisher in publishers.publishers"
+                                    <b-form-select-option v-for="publisher in activePublishers"
                                         :key="publisher.publisher_id" :value="publisher.publisher_id">{{
                                             publisher.publisher_name
                                         }}</b-form-select-option>
@@ -209,7 +303,7 @@
                                 </multiselect> -->
                                 <b-form-select v-model="book.c_category_id">
                                     <b-form-select-option value="" disabled>Select</b-form-select-option>
-                                    <b-form-select-option v-for="category in categories.categories"
+                                    <b-form-select-option v-for="category in activeCategories"
                                         :key="category.category_id" :value="category.category_id">{{
                                             category.category_name
                                         }}</b-form-select-option>
@@ -230,79 +324,20 @@
 
             </AppModal>
 
-            <AppModal modalId="updateBookModal" modalSize="lg">
-                <template #modal-header>
-                    Update Book
-                </template>
-                <template #modal-body>
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label for="title">Title</label>
-                            <b-form-input v-model="book.title" id="title"></b-form-input>
-                        </div>
-                        <div class="col-6">
-                            <label for="ISBN">ISBN</label>
-                            <b-form-input v-model="book.isbn" id="ISBN"></b-form-input>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label for="author">Author</label>
-                            <b-form-input v-model="book.author" id="author"></b-form-input>
-                        </div>
-                        <div class="col-6">
-                            <label for="publisher">Publisher</label>
-                            <!-- <b-form-input v-model="book.publisher" id="publisher"></b-form-input> -->
-                            <b-form-select v-model="book.p_publisher_id">
-                                <b-form-select-option v-for="publisher in publishers.publishers"
-                                    :key="publisher.publisher_id" :value="publisher.publisher_id">{{
-                                        publisher.publisher_name
-                                    }}</b-form-select-option>
-                            </b-form-select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-3">
-                            <label for="publication_year">Publication Year</label>
-                            <b-form-input v-model="book.publication_year" id="publication_year"></b-form-input>
-                        </div>
-                        <div class="col-3">
-                            <label for="no_of_copies">No. of Copies</label>
-                            <b-form-input v-model.number="book.no_of_copies" type="number"
-                                id="no_of_copies"></b-form-input>
-                        </div>
-                        <div class="col-3">
-                            <label for="shelf">Shelf</label>
-                            <b-form-input v-model.number="book.shelf" type="number" id="shelf"></b-form-input>
-                        </div>
-                        <div class="col-3">
-                            <label for="no_of_pages">No. of Pages</label>
-                            <b-form-input v-model.number="book.no_of_pages" type="number"
-                                id="no_of_pages"></b-form-input>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <label for="categories">Categories</label>
-                            <multiselect v-model="book.categories" :options="cats" :multiple="true"
-                                group-values="subcategories" group-label="name" placeholder="Type to search">
-                                <span slot="noResult">Oops! No elements found. Consider changing the search
-                                    query.</span>
-                            </multiselect>
-
-                        </div>
-                    </div>
-                </template>
-                <template #modal-btn>
-                    <b-button variant="primary">
-                        Update
-                    </b-button>
-                </template>
-            </AppModal>
-
 
         </main>
 
+        <AppModal modalId="removeBookModal" modalSize="lg" hideFooter>
+            <template #modal-header>
+                Delete Book
+            </template>
+            <template #modal-body>
+                <div class="row mb-3 text-center">
+                    Are you sure you want to remove <b>{{ selectedIsbn }}</b>?
+                </div>
+                <b-button @click="deleteBook(selectedIsbn)">yes</b-button>
+            </template>
+        </AppModal>
     </div>
 </template>
 
@@ -311,15 +346,15 @@
 
 import AppDropdown from '@/components/AppDropdown.vue'
 import AppModal from '@/components/AppModal.vue'
-import Multiselect from 'vue-multiselect'
-import { mapState } from 'vuex'
+// import Multiselect from 'vue-multiselect'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
     name: 'SearchBooksView',
     components: {
         AppDropdown,
         AppModal,
-        Multiselect
+        // Multiselect
     },
     data() {
         return {
@@ -336,8 +371,9 @@ export default {
             filter: null,
             book: this.newBookObject(),
             modalKey: 0,
-            selected: {}
-
+            updateBook: {},
+            book_id: 0,
+            selectedIsbn: ''
         }
     },
     created() {
@@ -347,8 +383,8 @@ export default {
     },
     mounted() {
         // Set the initial number of items
-        this.totalRows = this.items.length,
-            this.$root.$on('addNewBook', this.addBook)
+        this.totalRows = this.items.length
+        this.$root.$on('addNewBook', this.addBook)
     },
     methods: {
         rerenderModal() {
@@ -370,27 +406,30 @@ export default {
                     console.log('There was a problem adding the book.')
                 })
         },
-        // removeBook() {
-        //     this.$store.dispatch('removeBook', this.book)
-        //         .then(() => {
-        //             // this.book = this.newBookObject();
-        //             // this.$router.go(0)
-        //             this.rerenderModal();
-        //         })
-        //         .catch(() => {
-        //             console.log('There was a problem adding the book.')
-        //         })
-        // },
         deleteBook(isbn) {
-            // let selected = {}
-            let result = this.books.books.filter(book => book.isbn == isbn)
-            for (let book of result) { this.selected = book }
-
-            this.$store.dispatch('removeBook', this.selected)
+            this.$store.dispatch('removeBook', isbn)
                 .then(() => {
                     // this.book = this.newBookObject();
-                    // this.$router.go(0)
                     this.rerenderModal();
+                    this.$router.go(0)
+                })
+                .catch(() => {
+                    console.log('There was a problem adding the book.')
+                })
+        },
+        // getIsbn(isbn) {
+        //     this.selectedIsbn = isbn
+        // },
+        getSelectedBook(isbn) {
+            this.selectedIsbn = isbn
+            let result = this.books.books.filter(book => book.isbn == isbn)
+            for (let book of result) { this.updateBook = book }
+        },
+        editBook(isbn, book) {
+            this.$store.dispatch('editBook', { isbn, book })
+                .then(() => {
+                    this.rerenderModal();
+                    this.$router.go(0)
                 })
                 .catch(() => {
                     console.log('There was a problem adding the book.')
@@ -404,7 +443,7 @@ export default {
                 author: '',
                 p_publisher_id: '',
                 publication_year: '',
-                no_of_copies: '',
+                no_of_copies: 0,
                 shelf: '',
                 no_of_pages: '',
                 c_category_id: ''
@@ -412,9 +451,10 @@ export default {
         },
     },
     computed: {
-        ...mapState(['categories', 'books', 'publishers']),
+        ...mapState(['books']),
+        ...mapGetters(['activePublishers', 'activeCategories']),
         items() {
-            return this.books.books.map(item => ({ ...item }));
+            return this.books.books.map(item => ({ ...item, book_id: this.book_id++ }));
         },
         cats() {
             return this.categories.categories;
@@ -470,6 +510,8 @@ input {
 }
 
 .list-group-item {
-    text-transform: capitalize;
+    span {
+        text-transform: capitalize;
+    }
 }
 </style>

@@ -1,5 +1,3 @@
-// import router from "@/router";
-// import axios from "axios";
 import service from "@/services/service";
 
 export default {
@@ -18,14 +16,16 @@ export default {
     SET_BOOKS(state, books) {
       state.books = books;
     },
-
     ADD_BOOK(state, book) {
       state.books.push(book);
-      // router.push("/librarian/books");
     },
-    DELETE_BOOK(state, book) {
-      let index = state.books.findIndex((b) => b.isbn == book.isbn);
-      state.books.splice(index, 1);
+    REMOVE_BOOK(state, isbn) {
+      let index = state.books.findIndex((b) => b.isbn == isbn);
+      state.books.splice(index, 0);
+    },
+    UPDATE_BOOK(state, isbn) {
+      let index = state.books.findIndex((b) => b.isbn == isbn);
+      state.books.splice(index, 0);
     },
   },
   actions: {
@@ -47,11 +47,21 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    removeBook({ commit }, book) {
+    removeBook({ commit }, isbn) {
       service
-        .deleteBook(book)
+        .removeBook(isbn)
         .then(() => {
-          commit("DELETE_BOOK", book);
+          commit("REMOVE_BOOK", isbn);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    editBook({ commit }, { isbn, book }) {
+      service
+        .updateBook(isbn, book)
+        .then(() => {
+          commit("UPDATE_BOOK", isbn);
         })
         .catch((error) => {
           console.log(error);

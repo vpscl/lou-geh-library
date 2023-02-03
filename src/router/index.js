@@ -58,6 +58,11 @@ const routes = [
         name: "requests",
         component: () => import("../views/librarian/RequestsView.vue"),
       },
+      {
+        path: "/users",
+        name: "users",
+        component: () => import("../views/librarian/UsersView.vue"),
+      },
     ],
   },
 ];

@@ -73,7 +73,27 @@ main {
   overflow-x: hidden;
 }
 
+.table__container {
+  background: white;
+}
 
+.b-table-row-selected {
+  background-color: #f7f7f7 !important;
+}
+
+.nav__header {
+  height: 70px;
+}
+
+input {
+  outline: none;
+}
+
+a {
+  &:active {
+    background-color: none;
+  }
+}
 
 @media (min-width: 1024px) {
   main {

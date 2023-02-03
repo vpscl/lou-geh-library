@@ -8,12 +8,16 @@
                     <input type="text" placeholder="Search" class="w-75 border-0" id="filter-input" v-model="filter">
                 </div>
 
-                <b-button class="rounded" variant="outline-primary">Login</b-button>
+                <b-button class="rounded" variant="outline-primary" v-b-modal.loginModal>Login</b-button>
 
             </div>
 
 
             <div class="table__container p-4 pt-3 rounded">
+                <div class="d-flex justify-content-between mt-2 mb-4">
+                    <h4>Books</h4>
+                    <b-button v-b-modal.addBookModal variant="primary">Add Book</b-button>
+                </div>
                 <b-table :items="items" :per-page="perPage" :fields="fields" :current-page="currentPage"
                     label-sort-asc="" label-sort-desc="" label-sort-clear="" responsive :filter="filter"
                     @filtered="onFiltered">
@@ -70,8 +74,8 @@
 
                                 </b-list-group>
 
-                                <b-button v-if="row.item.no_of_copies > 0" class="mx-auto rounded-pill"
-                                    variant="outline-primary">
+                                <b-button @click="getSelectedBook(row.item.isbn)" v-if="row.item.no_of_copies > 0"
+                                    class="mx-auto rounded-pill" variant="outline-primary">
                                     Borrow
                                 </b-button>
                             </b-card-body>
@@ -86,20 +90,47 @@
                     class="mt-3 mb-0 justify-content-center"></b-pagination>
             </div>
 
+            <AppModal modalId="loginModal" modalSize="md" hideFooter :key="modalKey">
+                <template #modal-header>
+                    Login
+                </template>
+                <template #modal-body>
+                    <form class="px-2" @submit.prevent="login">
+                        <div class="row  mb-3 pt-0">
+                            <label for="username">Username</label>
+                            <b-input id="username" v-model="username"></b-input>
+
+                        </div>
+                        <div class="row mb-2">
+                            <label for="password">Password</label>
+                            <b-form-input type="password" id="password" v-model="password"></b-form-input>
+                        </div>
+                        <div class="w-100 mt-4 d-flex justify-content-center">
+                            <b-button class="rounded w-25" type="submit" variant="primary">
+                                Login
+                            </b-button>
+                        </div>
+                    </form>
+                </template>
+            </AppModal>
+
+            {{ request }}
         </main>
+
+
     </div>
 </template>
 
 
 <script>
 
-// import AppDropdown from '@/components/AppDropdown.vue'
+import AppModal from '@/components/AppModal.vue'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
     name: 'SearchBooksView',
     components: {
-        // AppDropdown
+        AppModal
     },
     data() {
         return {
@@ -114,6 +145,17 @@ export default {
             currentPage: 1,
             totalRows: 1,
             filter: null,
+            modalKey: 0,
+            request: {
+                b_isbn: '',
+                b_title: '',
+                date_requested: '',
+                l_librarian_id: '',
+            },
+            selectedIsbn: '',
+            username: '',
+            password: ''
+
         }
     },
     created() {
@@ -128,6 +170,40 @@ export default {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length
             this.currentPage = 1
+        },
+        addRequest() {
+            this.$store.dispatch('addRequest', this.request)
+                .then(() => {
+                    // this.request.b_isbn = ''
+                    // this.request.b_title = ''
+                    // this.request.date_requested = ''
+                    this.$router.go(0)
+                    // this.rerenderModal();
+                })
+                .catch((error) => {
+                    console.log('there was a problem', error)
+                })
+        },
+        getSelectedBook(isbn) {
+            this.selectedIsbn = isbn
+            let result = this.activeBooks.filter(book => book.isbn == isbn)
+            for (let book of result) {
+                console.log(book)
+                this.request.b_isbn = book.isbn
+                this.request.b_title = book.title
+                this.request.date_requested = new Date().toLocaleDateString();
+            }
+            this.addRequest()
+        },
+        login() {
+            this.$store.dispatch('login', {
+                username: this.username,
+                password: this.password
+            })
+                .then(() => {
+                    this.$router.push({ name: 'publishers' })
+                })
+
         }
     },
     computed: {
@@ -169,6 +245,21 @@ input {
 
     &:hover {
         color: lighten(black, 40%);
+    }
+}
+
+form {
+    // width: 30rem;
+    padding: 0 35px;
+    border-radius: 10px;
+
+    input {
+        height: 48px;
+    }
+
+    button {
+        height: 42px;
+
     }
 }
 </style>
