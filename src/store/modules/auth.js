@@ -1,6 +1,6 @@
 import service from "@/services/service";
 // import router from "@/router";
-import axios from "axios";
+// import axios from "axios";
 
 export default {
   state: {
@@ -8,20 +8,13 @@ export default {
     user: {},
   },
   getters: {
-    activeusers: (state) => {
-      return state.user.filter((user) => user.status == "active");
-    },
-    getuserByIsbn: (state) => (isbn) => {
-      return state.user.find((user) => user.isbn === isbn);
+    users: (state) => {
+      return state.user;
     },
   },
   mutations: {
     SET_USER_DATA(state, userData) {
       state.user = userData;
-      localStorage.setItem("user", JSON.stringify(userData));
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${userData.token}`;
     },
     LOGIN_SUCCESS(state, user) {
       state.loggedIn = true;
@@ -32,30 +25,20 @@ export default {
       state.user = null;
     },
     LOGOUT(state) {
-      state.loggedIn = false;
+      // state.loggedIn = false;
       state.user = null;
     },
   },
   actions: {
-    login({ commit }, user) {
-      return service
-        .login(user)
-        .then(({ data }) => {
-          //   if (response.data.token) {
-          //     localStorage.setItem("token", response.data.token);
-          //     localStorage.setItem("user", JSON.stringify(response.data));
-          //     router.push("/books");
-          //   }
+    login({ commit }, credentials) {
+      service.login(credentials).then(({ data }) => {
+        if (data.user[0].token) {
+          localStorage.setItem("user", JSON.stringify(data.user[0]));
+          localStorage.setItem("token", data.user[0].token);
+        }
 
-          //   commit("LOGIN_SUCCESS", localStorage.getItem("user"));
-          commit("SET_USER_DATA", data);
-          //   return response.data;
-        })
-        .catch((error) => {
-          commit("LOGIN_FAILURE", { user: null });
-          console.log("Invalid credentials!", error);
-          return error.message;
-        });
+        commit("SET_USER_DATA", data.user[0]);
+      });
     },
     logout({ commit }) {
       localStorage.removeItem("user");

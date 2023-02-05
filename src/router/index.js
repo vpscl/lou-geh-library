@@ -73,4 +73,14 @@ const router = new VueRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  const publicPage = "/reader/search";
+  const authRequired = !publicPage.includes(to.path);
+  const loggedIn = localStorage.getItem("user");
+
+  if (authRequired && !loggedIn) {
+    next("/");
+  } else next();
+});
+
 export default router;

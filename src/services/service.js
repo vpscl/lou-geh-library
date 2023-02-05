@@ -1,13 +1,10 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://172.16.4.182:5002/api/",
-  withCredentials: false,
+  baseURL: "https://assessment2.biotechfarms.net/api/",
   headers: {
     "Content-Type": "application/json",
-
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjc1MzkxNjgxLCJleHAiOjE2NzU0NzgwODF9.cu67ItInlVBlRoMlYgOft5ZLiKTa0KVE3nd9HaU0-OY",
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
 });
 
@@ -66,7 +63,7 @@ export default {
   updateIssuedBook(issuedBook_id, issuedBook) {
     return apiClient.patch(`/issued_books/${issuedBook_id}`, issuedBook);
   },
-  login(user) {
-    return apiClient.post("/users/login", user);
+  login(credentials) {
+    return apiClient.post("/users/login", credentials);
   },
 };

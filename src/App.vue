@@ -1,15 +1,25 @@
 <template>
   <div id="app">
+    <AppLoader />
     <router-view />
   </div>
 </template>
+
+<script>
+import AppLoader from "@/components/AppLoader.vue";
+
+export default {
+  components: {
+    AppLoader,
+  },
+};
+</script>
 
 <style lang="scss">
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-
 
   ::-webkit-scrollbar {
     width: 0.45rem;
@@ -23,13 +33,11 @@
   ::-webkit-scrollbar-thumb {
     background: rgb(190, 190, 190);
     border-radius: 20px;
-
   }
 
   ::-webkit-scrollbar-thumb {
     &:active {
       background: rgb(173, 173, 173);
-
     }
   }
 
@@ -41,8 +49,6 @@
   }
 }
 
-
-
 html,
 body,
 #app,
@@ -51,8 +57,6 @@ body,
   background: #f3f5fa;
   height: 100%;
 }
-
-
 
 a,
 .router-link {
@@ -99,6 +103,16 @@ a {
   main {
     padding: 20px 8%;
   }
+}
 
+.inactive {
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

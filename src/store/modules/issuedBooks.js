@@ -36,7 +36,7 @@ export default {
         });
     },
     editIssuedBook({ commit }, { id, issuedBook }) {
-      service
+      return service
         .updateIssuedBook(id, issuedBook)
         .then(() => {
           commit("UPDATE_ISSUED_BOOK", id);
