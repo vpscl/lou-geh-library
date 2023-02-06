@@ -1,11 +1,11 @@
 import service from "@/services/service";
-// import router from "@/router";
+import router from "@/router";
 // import axios from "axios";
 
 export default {
   state: {
-    loggedIn: false,
     user: {},
+    message: "",
   },
   getters: {
     users: (state) => {
@@ -31,19 +31,26 @@ export default {
   },
   actions: {
     login({ commit }, credentials) {
-      service.login(credentials).then(({ data }) => {
-        if (data.user[0].token) {
-          localStorage.setItem("user", JSON.stringify(data.user[0]));
-          localStorage.setItem("token", data.user[0].token);
-        }
+      service
+        .login(credentials)
+        .then(({ data }) => {
+          if (data.user[0].token) {
+            localStorage.setItem("user", JSON.stringify(data.user[0]));
+            localStorage.setItem("token", data.user[0].token);
+          }
 
-        commit("SET_USER_DATA", data.user[0]);
-      });
+          commit("SET_USER_DATA", data.user[0]);
+          location.href = "/books";
+        })
+        .catch((e) => {
+          alert(e.response.data.error);
+        });
     },
     logout({ commit }) {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       commit("LOGOUT");
+      router.go(0);
     },
   },
 };

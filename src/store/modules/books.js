@@ -1,4 +1,5 @@
 import service from "@/services/service";
+import router from "@/router";
 
 export default {
   state: {
@@ -34,6 +35,7 @@ export default {
         .postBook(book)
         .then(() => {
           commit("ADD_BOOK", book);
+          router.go(0);
         })
         .catch((error) => {
           console.log(error);
@@ -52,6 +54,7 @@ export default {
         .removeBook(isbn)
         .then(() => {
           commit("REMOVE_BOOK", isbn);
+          router.go(0);
         })
         .catch((error) => {
           console.log(error);
@@ -62,6 +65,7 @@ export default {
         .updateBook(isbn, book)
         .then(() => {
           commit("UPDATE_BOOK", isbn);
+          router.go(0);
         })
         .catch((error) => {
           console.log(error);

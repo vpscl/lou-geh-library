@@ -2,27 +2,16 @@
   <div class="wrapper">
     <main>
       <div
-        class="nav__header container-fluid w-100 px-4 mb-4 d-flex align-items-center justify-content-between rounded bg-white"
-      >
+        class="nav__header container-fluid w-100 px-4 mb-4 d-flex align-items-center justify-content-between rounded bg-white">
         <div class="search__container w-100">
           <b-icon icon="search" class="mr-3"></b-icon>
-          <input
-            type="text"
-            placeholder="Search"
-            class="w-75 border-0"
-            id="filter-input"
-            v-model.trim="filter"
-          />
+          <input type="text" placeholder="Search" class="w-75 border-0" id="filter-input" v-model.trim="filter" />
         </div>
 
         <AppDropdown>
           <template v-slot:text>
             Admin
-            <b-icon
-              class="ml-2"
-              font-scale=".75"
-              icon="caret-down-fill"
-            ></b-icon>
+            <b-icon class="ml-2" font-scale=".75" icon="caret-down-fill"></b-icon>
           </template>
           <template v-slot:links>
             <a class="dropdown-item" @click="logout">Logout</a>
@@ -33,28 +22,12 @@
       <div class="table__container p-4 pt-3 rounded">
         <div class="d-flex justify-content-between mt-2 mb-4">
           <h4>Books</h4>
-          <b-button v-b-modal.addBookModal class="primary-btn"
-            >Add Book</b-button
-          >
+          <b-button v-b-modal.addBookModal class="primary-btn">Add Book</b-button>
         </div>
-        <b-table
-          :items="items"
-          :per-page="perPage"
-          :fields="fields"
-          :current-page="currentPage"
-          label-sort-asc=""
-          label-sort-desc=""
-          label-sort-clear=""
-          responsive
-          :filter="filter"
-          @filtered="onFiltered"
-        >
+        <b-table :items="items" :per-page="perPage" :fields="fields" :current-page="currentPage" label-sort-asc=""
+          label-sort-desc="" label-sort-clear="" responsive :filter="filter" @filtered="onFiltered">
           <template #cell(actions)="row">
-            <b-button
-              size="sm"
-              @click="row.toggleDetails"
-              class="mr-2 secondary-btn"
-            >
+            <b-button size="sm" @click="row.toggleDetails" class="mr-2 secondary-btn">
               {{ row.detailsShowing ? "Hide" : "Show" }} Details
             </b-button>
           </template>
@@ -69,51 +42,25 @@
 
                   <AppDropdown>
                     <template v-slot:text>
-                      <b-icon
-                        @click="getSelectedBook(row.item.isbn)"
-                        icon="three-dots-vertical"
-                      ></b-icon>
+                      <b-icon @click="getSelectedBook(row.item.isbn)" icon="three-dots-vertical"></b-icon>
                     </template>
                     <template v-slot:links>
                       <li>
-                        <a
-                          v-b-modal.updateBookModal
-                          class="dropdown-item d-flex align-items-center py-2"
-                          href="#"
-                        >
-                          <b-icon
-                            icon="pencil-square"
-                            class="mr-2"
-                            font-scale=".95"
-                          ></b-icon>
+                        <a v-b-modal.updateBookModal class="dropdown-item d-flex align-items-center py-2" href="#">
+                          <b-icon icon="pencil-square" class="mr-2" font-scale=".95"></b-icon>
                           Update
                         </a>
                       </li>
                       <li v-if="row.item.status == 'active'">
-                        <a
-                          v-b-modal.removeBookModal
-                          class="dropdown-item d-flex align-items-center py-2"
-                          href="#"
-                        >
-                          <b-icon
-                            icon="slash-circle"
-                            class="mr-2"
-                            font-scale=".95"
-                          ></b-icon>
+                        <a v-b-modal.removeBookModal class="dropdown-item d-flex align-items-center py-2" href="#">
+                          <b-icon icon="slash-circle" class="mr-2" font-scale=".95"></b-icon>
                           Mark as inactive
                         </a>
                       </li>
                       <li v-else-if="row.item.status == 'inactive'">
-                        <a
-                          @click="editBook(selectedIsbn, updateBook)"
-                          class="dropdown-item d-flex align-items-center py-2"
-                          href="#"
-                        >
-                          <b-icon
-                            icon="check2-circle"
-                            class="mr-2"
-                            font-scale=".95"
-                          ></b-icon>
+                        <a @click="editBook(selectedIsbn, updateBook)"
+                          class="dropdown-item d-flex align-items-center py-2" href="#">
+                          <b-icon icon="check2-circle" class="mr-2" font-scale=".95"></b-icon>
                           Mark as active
                         </a>
                       </li>
@@ -124,55 +71,31 @@
                 <b-card-text>{{ row.item.description }}</b-card-text>
 
                 <b-list-group class="mb-3">
-                  <b-list-group-item
-                    ><b>ISBN:</b> {{ row.item.isbn }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Author:</b> {{ row.item.author }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Publisher:</b>
-                    {{ row.item.publisher_name }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Publication Year:</b>
-                    {{ row.item.publication_year }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Category:</b>
+                  <b-list-group-item><b>ISBN:</b> {{ row.item.isbn }}</b-list-group-item>
+                  <b-list-group-item><b>Author:</b> {{ row.item.author }}</b-list-group-item>
+                  <b-list-group-item><b>Publisher:</b>
+                    {{ row.item.publisher_name }}</b-list-group-item>
+                  <b-list-group-item><b>Publication Year:</b>
+                    {{ row.item.publication_year }}</b-list-group-item>
+                  <b-list-group-item><b>Category:</b>
                     <!-- <b-badge pill variant="light" class="ml-2" :key="index"
                                             v-for="(category, index) in row.item.subcategories">{{ category }}</b-badge> -->
                     <b-badge pill variant="light" class="ml-2">{{
                       row.item.category_name
                     }}</b-badge>
                   </b-list-group-item>
-                  <b-list-group-item
-                    ><b>No. of Pages:</b>
-                    {{ row.item.no_of_pages }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>No. of Copies:</b>
-                    {{ row.item.no_of_copies }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Shelf:</b> {{ row.item.shelf }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Status:</b>
-                    <b-badge
-                      pill
-                      v-if="row.item.status == 'active'"
-                      variant="success"
-                      class="ml-2 text-white"
-                      >{{ row.item.status }}</b-badge
-                    >
-                    <b-badge
-                      pill
-                      v-if="row.item.status == 'inactive'"
-                      variant="warning"
-                      class="ml-2 text-white"
-                      >{{ row.item.status }}</b-badge
-                    >
+                  <b-list-group-item><b>No. of Pages:</b>
+                    {{ row.item.no_of_pages }}</b-list-group-item>
+                  <b-list-group-item><b>No. of Copies:</b>
+                    {{ row.item.no_of_copies }}</b-list-group-item>
+                  <b-list-group-item><b>Shelf:</b> {{ row.item.shelf }}</b-list-group-item>
+                  <b-list-group-item><b>Status:</b>
+                    <b-badge pill v-if="row.item.status == 'active'" variant="success" class="ml-2 text-white">{{
+                      row.item.status
+                    }}</b-badge>
+                    <b-badge pill v-if="row.item.status == 'inactive'" variant="warning" class="ml-2 text-white">{{
+                      row.item.status
+                    }}</b-badge>
                   </b-list-group-item>
                 </b-list-group>
               </b-card-body>
@@ -180,104 +103,62 @@
           </template>
         </b-table>
 
-        <b-pagination
-          v-model.trim="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          aria-controls="my-table"
-          class="mt-3 mb-0 justify-content-center"
-        ></b-pagination>
+        <b-pagination v-model.trim="currentPage" :total-rows="totalRows" :per-page="perPage" aria-controls="my-table"
+          class="mt-3 mb-0 justify-content-center"></b-pagination>
 
-        <AppModal
-          modalId="updateBookModal"
-          modalSize="lg"
-          hideFooter
-          :key="modalKey"
-        >
+        <AppModal modalId="updateBookModal" modalSize="lg" hideFooter :key="modalKey">
           <template #modal-header> Update Book </template>
           <template #modal-body>
             <form @submit.prevent="editBook(selectedIsbn, updateBook)">
               <b-row class="mb-3 px-2">
                 <div class="col-6">
                   <label for="title">Title</label>
-                  <b-form-input
-                    v-model.trim="updateBook.title"
-                    id="title"
-                  ></b-form-input>
+                  <b-form-input v-model.trim="updateBook.title" id="title"></b-form-input>
                 </div>
                 <div class="col-6">
                   <label for="ISBN">ISBN</label>
-                  <b-form-input
-                    v-model.trim="updateBook.isbn"
-                    id="isbn"
-                  ></b-form-input>
+                  <b-form-input v-model.trim="updateBook.isbn" id="isbn"></b-form-input>
                 </div>
               </b-row>
               <b-row class="mb-3 px-2">
                 <div class="col-12">
                   <label for="description">Description</label>
-                  <b-form-textarea
-                    id="description"
-                    v-model.trim="updateBook.description"
-                    rows="3"
-                    max-rows="6"
-                  ></b-form-textarea>
+                  <b-form-textarea id="description" v-model.trim="updateBook.description" rows="3"
+                    max-rows="6"></b-form-textarea>
                 </div>
               </b-row>
               <b-row class="mb-3 px-2">
                 <div class="col-6">
                   <label for="author">Author</label>
-                  <b-form-input
-                    v-model.trim="updateBook.author"
-                    id="author"
-                  ></b-form-input>
+                  <b-form-input v-model.trim="updateBook.author" id="author"></b-form-input>
                 </div>
                 <div class="col-6">
                   <label for="publisher">Publisher</label>
                   <b-form-select v-model.trim="updateBook.p_publisher_id">
-                    <b-form-select-option value="" disabled
-                      >Select</b-form-select-option
-                    >
-                    <b-form-select-option
-                      v-for="publisher in activePublishers"
-                      :key="publisher.publisher_id"
-                      :value="publisher.publisher_id"
-                      >{{ publisher.publisher_name }}</b-form-select-option
-                    >
+                    <b-form-select-option value="" disabled>Select</b-form-select-option>
+                    <b-form-select-option v-for="publisher in activePublishers" :key="publisher.publisher_id"
+                      :value="publisher.publisher_id">{{ publisher.publisher_name }}</b-form-select-option>
                   </b-form-select>
                 </div>
               </b-row>
               <b-row class="mb-3 px-2">
                 <div class="col-3">
                   <label for="publication_year">Publication Year</label>
-                  <b-form-input
-                    v-model.trim="updateBook.publication_year"
-                    id="publication_year"
-                  ></b-form-input>
+                  <b-form-input v-model.trim="updateBook.publication_year" id="publication_year"></b-form-input>
                 </div>
                 <div class="col-3">
                   <label for="no_of_copies">No. of Copies</label>
-                  <b-form-input
-                    v-model.trim.number="updateBook.no_of_copies"
-                    type="number"
-                    id="no_of_copies"
-                  ></b-form-input>
+                  <b-form-input v-model.trim.number="updateBook.no_of_copies" type="number"
+                    id="no_of_copies"></b-form-input>
                 </div>
                 <div class="col-3">
                   <label for="shelf">Shelf</label>
-                  <b-form-input
-                    v-model.trim.number="updateBook.shelf"
-                    type="number"
-                    id="shelf"
-                  ></b-form-input>
+                  <b-form-input v-model.trim.number="updateBook.shelf" type="number" id="shelf"></b-form-input>
                 </div>
                 <div class="col-3">
                   <label for="no_of_pages">No. of Pages</label>
-                  <b-form-input
-                    v-model.trim.number="updateBook.no_of_pages"
-                    type="number"
-                    id="no_of_pages"
-                  ></b-form-input>
+                  <b-form-input v-model.trim.number="updateBook.no_of_pages" type="number"
+                    id="no_of_pages"></b-form-input>
                 </div>
               </b-row>
               <b-row class="mb-2 px-2">
@@ -290,15 +171,9 @@
                                         query.</span>
                                 </multiselect> -->
                   <b-form-select v-model.trim="updateBook.c_category_id">
-                    <b-form-select-option value="" disabled
-                      >Select</b-form-select-option
-                    >
-                    <b-form-select-option
-                      v-for="category in activeCategories"
-                      :key="category.category_id"
-                      :value="category.category_id"
-                      >{{ category.category_name }}</b-form-select-option
-                    >
+                    <b-form-select-option value="" disabled>Select</b-form-select-option>
+                    <b-form-select-option v-for="category in activeCategories" :key="category.category_id"
+                      :value="category.category_id">{{ category.category_name }}</b-form-select-option>
                   </b-form-select>
                 </div>
               </b-row>
@@ -314,244 +189,129 @@
         </AppModal>
       </div>
 
-      <AppModal
-        :key="modalKey"
-        modalId="addBookModal"
-        modalSize="lg"
-        submitMethod="addBook"
-        hideFooter
-      >
+      <AppModal :key="modalKey" modalId="addBookModal" modalSize="lg" submitMethod="addBook" hideFooter>
         <template #modal-header> Add Book </template>
         <template #modal-body>
           <form @submit.prevent="addBook">
             <b-row class="mb-3 px-2">
-              <div
-                class="col-6"
-                :class="{ 'input-group--error': $v.book.title.$error }"
-              >
+              <div class="col-6" :class="{ 'input-group--error': $v.book.title.$error }">
                 <label for="title">Title</label>
-                <b-form-input
-                  v-model.trim="$v.book.title.$model"
-                  id="title"
-                ></b-form-input>
-                <p
-                  class="error-message"
-                  v-if="submitStatus === 'error' && !$v.book.title.required"
-                >
+                <b-form-input v-model.trim="$v.book.title.$model" id="title"></b-form-input>
+                <p class="error-message" v-if="submitStatus === 'error' && !$v.book.title.required">
                   Title is required.
                 </p>
               </div>
-              <div
-                class="col-6"
-                :class="{ 'input-group--error': $v.book.isbn.$error }"
-              >
+              <div class="col-6" :class="{ 'input-group--error': $v.book.isbn.$error }">
                 <label for="ISBN">ISBN</label>
-                <b-form-input
-                  v-model.trim="$v.book.isbn.$model"
-                  id="isbn"
-                ></b-form-input>
-                <p
-                  class="error-message"
-                  v-if="submitStatus === 'error' && !$v.book.isbn.required"
-                >
+                <b-form-input v-model.trim="$v.book.isbn.$model" id="isbn"></b-form-input>
+                <p class="error-message" v-if="submitStatus === 'error' && !$v.book.isbn.required">
                   ISBN is required.
                 </p>
               </div>
             </b-row>
             <b-row class="mb-3 px-2">
-              <div
-                class="col-12"
-                :class="{ 'input-group--error': $v.book.description.$error }"
-              >
+              <div class="col-12" :class="{ 'input-group--error': $v.book.description.$error }">
                 <label for="description">Description</label>
-                <b-form-textarea
-                  id="description"
-                  v-model.trim="$v.book.description.$model"
-                  rows="3"
-                  max-rows="6"
-                ></b-form-textarea>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' && !$v.book.description.required
-                  "
-                >
+                <b-form-textarea id="description" v-model.trim="$v.book.description.$model" rows="3"
+                  max-rows="6"></b-form-textarea>
+                <p class="error-message" v-if="
+                  submitStatus === 'error' && !$v.book.description.required
+                ">
                   Description is required.
                 </p>
               </div>
             </b-row>
             <b-row class="mb-3 px-2">
-              <div
-                class="col-6"
-                :class="{ 'input-group--error': $v.book.author.$error }"
-              >
+              <div class="col-6" :class="{ 'input-group--error': $v.book.author.$error }">
                 <label for="author">Author</label>
-                <b-form-input
-                  v-model.trim="$v.book.author.$model"
-                  id="author"
-                ></b-form-input>
-                <p
-                  class="error-message"
-                  v-if="submitStatus === 'error' && !$v.book.author.required"
-                >
+                <b-form-input v-model.trim="$v.book.author.$model" id="author"></b-form-input>
+                <p class="error-message" v-if="submitStatus === 'error' && !$v.book.author.required">
                   Author is required.
                 </p>
               </div>
-              <div
-                class="col-6"
-                :class="{ 'input-group--error': $v.book.p_publisher_id.$error }"
-              >
+              <div class="col-6" :class="{ 'input-group--error': $v.book.p_publisher_id.$error }">
                 <label for="publisher">Publisher</label>
                 <b-form-select v-model.trim="$v.book.p_publisher_id.$model">
-                  <b-form-select-option value disabled
-                    >Select</b-form-select-option
-                  >
-                  <b-form-select-option
-                    v-for="publisher in activePublishers"
-                    :key="publisher.publisher_id"
-                    :value="publisher.publisher_id"
-                    >{{ publisher.publisher_name }}</b-form-select-option
-                  >
+                  <b-form-select-option value disabled>Select</b-form-select-option>
+                  <b-form-select-option v-for="publisher in activePublishers" :key="publisher.publisher_id"
+                    :value="publisher.publisher_id">{{ publisher.publisher_name }}</b-form-select-option>
                 </b-form-select>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' && !$v.book.p_publisher_id.required
-                  "
-                >
+                <p class="error-message" v-if="
+                  submitStatus === 'error' && !$v.book.p_publisher_id.required
+                ">
                   Publisher is required.
                 </p>
               </div>
             </b-row>
             <b-row class="mb-3 px-2">
-              <div
-                class="col-3"
-                :class="{
-                  'input-group--error': $v.book.publication_year.$error,
-                }"
-              >
+              <div class="col-3" :class="{
+                'input-group--error': $v.book.publication_year.$error,
+              }">
                 <label for="publication_year">Publication Year</label>
-                <b-form-input
-                  v-model.trim="$v.book.publication_year.$model"
-                  id="publication_year"
-                ></b-form-input>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' &&
-                    !$v.book.publication_year.required
-                  "
-                >
+                <b-form-input v-model.trim="$v.book.publication_year.$model" id="publication_year"></b-form-input>
+                <p class="error-message" v-if="
+                  submitStatus === 'error' &&
+                  !$v.book.publication_year.required
+                ">
                   Publication year is required.
                 </p>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' &&
-                    !$v.book.publication_year.numeric
-                  "
-                >
+                <p class="error-message" v-if="
+                  submitStatus === 'error' &&
+                  !$v.book.publication_year.numeric
+                ">
                   Publication year must be a number.
                 </p>
               </div>
-              <div
-                class="col-3"
-                :class="{ 'input-group--error': $v.book.no_of_copies.$error }"
-              >
+              <div class="col-3" :class="{ 'input-group--error': $v.book.no_of_copies.$error }">
                 <label for="no_of_copies">No. of Copies</label>
-                <b-form-input
-                  v-model.number="$v.book.no_of_copies.$model"
-                  id="no_of_copies"
-                ></b-form-input>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' && !$v.book.no_of_copies.numeric
-                  "
-                >
+                <b-form-input v-model.number="$v.book.no_of_copies.$model" id="no_of_copies"></b-form-input>
+                <p class="error-message" v-if="
+                  submitStatus === 'error' && !$v.book.no_of_copies.numeric
+                ">
                   No. of copies must be a number.
                 </p>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' && !$v.book.no_of_copies.required
-                  "
-                >
+                <p class="error-message" v-if="
+                  submitStatus === 'error' && !$v.book.no_of_copies.required
+                ">
                   No. of copies is required.
                 </p>
               </div>
-              <div
-                class="col-3"
-                :class="{ 'input-group--error': $v.book.shelf.$error }"
-              >
+              <div class="col-3" :class="{ 'input-group--error': $v.book.shelf.$error }">
                 <label for="shelf">Shelf</label>
-                <b-form-input
-                  v-model.trim="$v.book.shelf.$model"
-                  id="shelf"
-                ></b-form-input>
-                <p
-                  class="error-message"
-                  v-if="submitStatus === 'error' && !$v.book.shelf.numeric"
-                >
+                <b-form-input v-model.trim="$v.book.shelf.$model" id="shelf"></b-form-input>
+                <p class="error-message" v-if="submitStatus === 'error' && !$v.book.shelf.numeric">
                   Shelf must be a number.
                 </p>
-                <p
-                  class="error-message"
-                  v-if="submitStatus === 'error' && !$v.book.shelf.required"
-                >
+                <p class="error-message" v-if="submitStatus === 'error' && !$v.book.shelf.required">
                   Shelf is required.
                 </p>
               </div>
-              <div
-                class="col-3"
-                :class="{ 'input-group--error': $v.book.no_of_pages.$error }"
-              >
+              <div class="col-3" :class="{ 'input-group--error': $v.book.no_of_pages.$error }">
                 <label for="no_of_pages">No. of Pages</label>
-                <b-form-input
-                  v-model.trim="$v.book.no_of_pages.$model"
-                  id="no_of_pages"
-                ></b-form-input>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' && !$v.book.no_of_pages.numeric
-                  "
-                >
+                <b-form-input v-model.trim="$v.book.no_of_pages.$model" id="no_of_pages"></b-form-input>
+                <p class="error-message" v-if="
+                  submitStatus === 'error' && !$v.book.no_of_pages.numeric
+                ">
                   No. of pages must be a number.
                 </p>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' && !$v.book.no_of_pages.required
-                  "
-                >
+                <p class="error-message" v-if="
+                  submitStatus === 'error' && !$v.book.no_of_pages.required
+                ">
                   No. of pages is required.
                 </p>
               </div>
             </b-row>
             <b-row class="mb-2 px-2">
-              <div
-                class="col-12"
-                :class="{ 'input-group--error': $v.book.c_category_id.$error }"
-              >
+              <div class="col-12" :class="{ 'input-group--error': $v.book.c_category_id.$error }">
                 <label for="categories">Category</label>
                 <b-form-select v-model.trim="$v.book.c_category_id.$model">
-                  <b-form-select-option value="" disabled
-                    >Select</b-form-select-option
-                  >
-                  <b-form-select-option
-                    v-for="category in activeCategories"
-                    :key="category.category_id"
-                    :value="category.category_id"
-                    >{{ category.category_name }}</b-form-select-option
-                  >
+                  <b-form-select-option value="" disabled>Select</b-form-select-option>
+                  <b-form-select-option v-for="category in activeCategories" :key="category.category_id"
+                    :value="category.category_id">{{ category.category_name }}</b-form-select-option>
                 </b-form-select>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' && !$v.book.c_category_id.required
-                  "
-                >
+                <p class="error-message" v-if="
+                  submitStatus === 'error' && !$v.book.c_category_id.required
+                ">
                   Category is required.
                 </p>
               </div>
@@ -577,17 +337,10 @@
         </div>
 
         <div class="w-100 mt-4 d-flex justify-content-end">
-          <b-button
-            class="mr-2 secondary-btn text-muted"
-            @click="rerenderModal()"
-          >
+          <b-button class="mr-2 secondary-btn text-muted" @click="rerenderModal()">
             Cancel
           </b-button>
-          <b-button
-            variant="warning"
-            class="warning-btn"
-            @click="deleteBook(selectedIsbn)"
-          >
+          <b-button variant="warning" class="warning-btn" @click="deleteBook(selectedIsbn)">
             Yes
           </b-button>
         </div>
@@ -701,9 +454,9 @@ export default {
         this.$store
           .dispatch("addBook", this.book)
           .then(() => {
-            setTimeout(() => {
-              this.$router.go(0);
-            }, 700);
+            // setTimeout(() => {
+            //   this.$router.go(0);
+            // }, 700);
           })
           .catch(() => {
             console.log("There was a problem adding the book.");
@@ -714,9 +467,9 @@ export default {
       this.$store
         .dispatch("removeBook", isbn)
         .then(() => {
-          setTimeout(() => {
-            this.$router.go(0);
-          }, 750);
+          // setTimeout(() => {
+          //   this.$router.go(0);
+          // }, 750);
         })
         .catch((error) => {
           console.log(error);
@@ -733,10 +486,10 @@ export default {
       this.$store
         .dispatch("editBook", { isbn, book })
         .then(() => {
-          this.rerenderModal();
-          setTimeout(() => {
-            this.$router.go(0);
-          }, 750);
+          // this.rerenderModal();
+          // setTimeout(() => {
+          //   this.$router.go(0);
+          // }, 750);
         })
         .catch((error) => {
           console.log(error);
@@ -758,11 +511,7 @@ export default {
     },
 
     logout() {
-      this.$store.dispatch("logout").then(() => {
-        setTimeout(() => {
-          this.$router.go(0);
-        }, 1000);
-      });
+      this.$store.dispatch("logout")
     },
     setBookPublisher(value) {
       this.book.publisher = value;

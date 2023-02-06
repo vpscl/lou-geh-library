@@ -25,24 +25,12 @@
           <div class="sidebar__text">Categories</div>
         </router-link>
       </li>
-      <!-- <li class="sidebar__item">
-                <router-link class="sidebar__link" :to="{ name: 'readers' }" exact>
-                    <b-icon icon="people" font-scale="2"></b-icon>
-                    <div class="sidebar__text">Readers</div>
-                </router-link>
-            </li> -->
       <li class="sidebar__item">
         <router-link class="sidebar__link" :to="{ name: 'requests' }" exact>
           <b-icon icon="bell" font-scale="2"></b-icon>
           <div class="sidebar__text">Requests</div>
         </router-link>
       </li>
-      <!-- <li class="sidebar__item">
-                <router-link class="sidebar__link" :to="{ name: 'users' }" exact>
-                    <b-icon icon="people" font-scale="2"></b-icon>
-                    <div class="sidebar__text">Users</div>
-                </router-link>
-            </li> -->
     </AppSidebar>
     <router-view />
   </div>
@@ -56,4 +44,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+</style>

@@ -23,7 +23,7 @@ export default {
     showToggle() {
       setTimeout(() => {
         this.show = false;
-      }, 1750);
+      }, 1500);
     },
   },
 };
@@ -43,7 +43,7 @@ export default {
   z-index: 10000;
 }
 
-.loader > span {
+.loader>span {
   display: inline-block;
   background-color: #7679ff;
   width: 0px;
@@ -54,12 +54,12 @@ export default {
   animation: bounce 0.6s infinite alternate;
 }
 
-.loader > span:nth-child(2) {
+.loader>span:nth-child(2) {
   background-color: #a9aaf7;
   animation-delay: 0.2s;
 }
 
-.loader > span:nth-child(3) {
+.loader>span:nth-child(3) {
   animation-delay: 0.4s;
 }
 

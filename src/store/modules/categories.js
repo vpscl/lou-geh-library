@@ -1,4 +1,4 @@
-// import router from "@/router";
+import router from "@/router";
 import service from "@/services/service";
 
 export default {
@@ -34,6 +34,7 @@ export default {
         .postCategory(category)
         .then(() => {
           commit("ADD_CATEGORY", category);
+          router.go(0);
         })
         .catch((error) => {
           console.log(error);
@@ -52,6 +53,7 @@ export default {
         .removeCategory(id)
         .then(() => {
           commit("REMOVE_CATEGORY", id);
+          router.go(0);
         })
         .catch((error) => {
           console.log(error);
@@ -62,6 +64,7 @@ export default {
         .updateCategory(id, category)
         .then(() => {
           commit("UPDATE_CATEGORY", id);
+          router.go(0);
         })
         .catch((error) => {
           console.log(error);

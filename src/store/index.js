@@ -6,7 +6,6 @@ import categories from "./modules/categories";
 import issuedBooks from "./modules/issuedBooks";
 import publishers from "./modules/publishers";
 import requests from "./modules/requests";
-import users from "./modules/users";
 
 Vue.use(Vuex);
 
@@ -18,6 +17,5 @@ export default new Vuex.Store({
     issuedBooks,
     publishers,
     requests,
-    users,
   },
 });

@@ -1,4 +1,5 @@
 import service from "@/services/service";
+import router from "@/router";
 
 export default {
   state: {
@@ -27,7 +28,6 @@ export default {
         .getRequests()
         .then((response) => {
           commit("SET_REQUESTS", response.data.requestList);
-          console.log(response.data.requestList);
         })
         .catch((error) => console.log(error));
     },
@@ -36,6 +36,7 @@ export default {
         .postRequest(request)
         .then(() => {
           commit("ADD_REQUEST", request);
+          router.go(0);
         })
         .catch((error) => {
           console.log(error);
@@ -46,6 +47,7 @@ export default {
         .removeRequest(id)
         .then(() => {
           commit("REMOVE_REQUEST", id);
+          router.go(0);
         })
         .catch((error) => {
           console.log(error);

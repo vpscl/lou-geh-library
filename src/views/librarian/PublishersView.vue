@@ -2,27 +2,16 @@
   <div class="wrapper">
     <main>
       <div
-        class="nav__header container-fluid w-100 px-4 mb-4 d-flex align-items-center justify-content-between rounded bg-white"
-      >
+        class="nav__header container-fluid w-100 px-4 mb-4 d-flex align-items-center justify-content-between rounded bg-white">
         <div class="search__container w-100">
           <b-icon icon="search" class="mr-3"></b-icon>
-          <input
-            type="text"
-            placeholder="Search"
-            class="w-75 border-0"
-            id="filter-input"
-            v-model="filter"
-          />
+          <input type="text" placeholder="Search" class="w-75 border-0" id="filter-input" v-model="filter" />
         </div>
 
         <AppDropdown>
           <template v-slot:text>
             Admin
-            <b-icon
-              class="ml-2"
-              font-scale=".75"
-              icon="caret-down-fill"
-            ></b-icon>
+            <b-icon class="ml-2" font-scale=".75" icon="caret-down-fill"></b-icon>
           </template>
           <template v-slot:links>
             <a class="dropdown-item" @click="logout">Logout </a>
@@ -34,55 +23,27 @@
         <div class="d-flex justify-content-between mt-2 mb-4">
           <h4>Publishers</h4>
           <div>
-            <b-button
-              class="mr-2 warning-btn"
-              v-if="selectedRow[0] && selectedPublisher.p_status == 'active'"
-              v-b-modal.removePublisherModal
-            >
+            <b-button class="mr-2 warning-btn" v-if="selectedRow[0] && selectedPublisher.p_status == 'active'"
+              v-b-modal.removePublisherModal>
               <b-icon icon="slash-circle" scale=".85"></b-icon>
-              Mark as Inactive</b-button
-            >
-            <b-button
-              class="mr-2 success-btn"
-              @click="
-                editPublisher(selectedPublisher.publisher_id, selectedPublisher)
-              "
-              v-if="selectedRow[0] && selectedPublisher.p_status == 'inactive'"
-            >
+              Mark as Inactive</b-button>
+            <b-button class="mr-2 success-btn" @click="
+              editPublisher(selectedPublisher.publisher_id, selectedPublisher)
+            " v-if="selectedRow[0] && selectedPublisher.p_status == 'inactive'">
               <b-icon icon="check2-circle" scale=".85"></b-icon>
-              Mark as Active</b-button
-            >
-            <b-button
-              v-if="selectedRow[0]"
-              class="mr-2 info-btn"
-              v-b-modal.updatePublisherModal
-            >
+              Mark as Active</b-button>
+            <b-button v-if="selectedRow[0]" class="mr-2 info-btn" v-b-modal.updatePublisherModal>
               Update
             </b-button>
 
             <b-button class="primary-btn" v-b-modal.addPublisherModal>
-              Add Publisher</b-button
-            >
+              Add Publisher</b-button>
           </div>
         </div>
 
-        <b-table
-          :items="items"
-          :per-page="perPage"
-          :fields="fields"
-          :current-page="currentPage"
-          label-sort-asc=""
-          label-sort-desc=""
-          label-sort-clear=""
-          fixed
-          responsive
-          :filter="filter"
-          select-mode="single"
-          ref="selectableTable"
-          selectable
-          @row-selected="onRowSelected"
-          @filtered="onFiltered"
-        >
+        <b-table :items="items" :per-page="perPage" :fields="fields" :current-page="currentPage" label-sort-asc=""
+          label-sort-desc="" label-sort-clear="" fixed responsive :filter="filter" select-mode="single"
+          ref="selectableTable" selectable @row-selected="onRowSelected" @filtered="onFiltered">
           <template #cell(location)="row">
             <div v-if="row.item.p_status == 'inactive'" class="inactive">
               <span>{{ row.item.location }}</span>
@@ -96,57 +57,34 @@
           </template>
         </b-table>
 
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          aria-controls="my-table"
-          class="mt-3 mb-0 justify-content-center"
-        ></b-pagination>
+        <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" aria-controls="my-table"
+          class="mt-3 mb-0 justify-content-center"></b-pagination>
 
         <AppModal modalId="addPublisherModal" :key="modalKey" hideFooter>
           <template #modal-header> Add Publisher </template>
 
           <template #modal-body>
             <form class="px-2" @submit.prevent="addPublisher">
-              <div
-                class="mb-3 pt-0"
-                :class="{
-                  'input-group--error': $v.publisher.publisher_name.$error,
-                }"
-              >
+              <div class="mb-3 pt-0" :class="{
+                'input-group--error': $v.publisher.publisher_name.$error,
+              }">
                 <label for="publisher_name">Name</label>
-                <b-input
-                  id="publisher_name"
-                  v-model="publisher.publisher_name"
-                ></b-input>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' &&
-                    !$v.publisher.publisher_name.required
-                  "
-                >
+                <b-input id="publisher_name" v-model="publisher.publisher_name"></b-input>
+                <p class="error-message" v-if="
+                  submitStatus === 'error' &&
+                  !$v.publisher.publisher_name.required
+                ">
                   Name is required.
                 </p>
               </div>
-              <div
-                class="mb-2"
-                :class="{
-                  'input-group--error': $v.publisher.publisher_name.$error,
-                }"
-              >
+              <div class="mb-2" :class="{
+                'input-group--error': $v.publisher.publisher_name.$error,
+              }">
                 <label for="publisher_location">Location</label>
-                <b-form-input
-                  id="publisher_location"
-                  v-model="publisher.location"
-                ></b-form-input>
-                <p
-                  class="error-message"
-                  v-if="
-                    submitStatus === 'error' && !$v.publisher.location.required
-                  "
-                >
+                <b-form-input id="publisher_location" v-model="publisher.location"></b-form-input>
+                <p class="error-message" v-if="
+                  submitStatus === 'error' && !$v.publisher.location.required
+                ">
                   Location is required.
                 </p>
               </div>
@@ -165,30 +103,18 @@
         <template #modal-header> Update Publisher </template>
 
         <template #modal-body>
-          <form
-            class="px-2"
-            @submit.prevent="
-              editPublisher(selectedPublisher.publisher_id, selectedPublisher)
-            "
-          >
+          <form class="px-2" @submit.prevent="
+            editPublisher(selectedPublisher.publisher_id, selectedPublisher)
+          ">
             <div class="mb-3 pt-0">
               <label for="publisher_name">Name</label>
-              <b-input
-                id="publisher_name"
-                v-model="selectedPublisher.publisher_name"
-              ></b-input>
+              <b-input id="publisher_name" v-model="selectedPublisher.publisher_name"></b-input>
             </div>
-            <div
-              class="mb-2"
-              :class="{
-                'input-group--error': $v.publisher.publisher_name.$error,
-              }"
-            >
+            <div class="mb-2" :class="{
+              'input-group--error': $v.publisher.publisher_name.$error,
+            }">
               <label for="publisher_location">Location</label>
-              <b-form-input
-                id="publisher_location"
-                v-model="selectedPublisher.location"
-              ></b-form-input>
+              <b-form-input id="publisher_location" v-model="selectedPublisher.location"></b-form-input>
             </div>
 
             <div class="w-100 mt-4 d-flex justify-content-end">
@@ -202,12 +128,7 @@
       </AppModal>
     </main>
 
-    <AppModal
-      modalId="removePublisherModal"
-      modalSize="md"
-      hideFooter
-      :key="modalKey"
-    >
+    <AppModal modalId="removePublisherModal" modalSize="md" hideFooter :key="modalKey">
       <template #modal-header> Mark Selected Publisher as Inactive </template>
       <template #modal-body>
         <div class="pb-2">
@@ -216,17 +137,11 @@
         </div>
 
         <div class="w-100 mt-4 d-flex justify-content-end">
-          <b-button
-            class="mr-2 secondary-btn text-muted"
-            @click="rerenderModal()"
-          >
+          <b-button class="mr-2 secondary-btn text-muted" @click="rerenderModal()">
             Cancel
           </b-button>
-          <b-button
-            variant="warning"
-            class="warning-btn text-warning"
-            @click="deletePublisher(selectedPublisher.publisher_id)"
-          >
+          <b-button variant="warning" class="warning-btn text-warning"
+            @click="deletePublisher(selectedPublisher.publisher_id)">
             Yes
           </b-button>
         </div>
@@ -333,48 +248,25 @@ export default {
       } else {
         this.$store
           .dispatch("addPublisher", this.publisher)
-          .then(() => {
-            this.publisher = this.newPublisherObject();
-            this.$router.go(0);
-          })
-          .catch(() => {
-            console.log("There was a problem adding the publisher.");
-          });
       }
     },
     editPublisher(id, publisher) {
       this.$store
         .dispatch("editPublisher", { id, publisher })
-        .then(() => {
-          setTimeout(() => {
-            this.$router.go(0);
-          }, 700);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
     },
     deletePublisher(isbn) {
       this.$store
         .dispatch("removePublisher", isbn)
-        .then(() => {
-          setTimeout(() => {
-            this.$router.go(0);
-          }, 700);
-        })
-        .catch(() => {
-          console.log("There was a problem marking the publisher as inactive.");
-        });
+
     },
     logout() {
-      this.$store.dispatch("logout").then(() => {
-        setTimeout(() => {
-          this.$router.go(0);
-        }, 1000);
-      });
+      this.$store.dispatch("logout")
     },
   },
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+
+</style>

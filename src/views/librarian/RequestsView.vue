@@ -2,27 +2,16 @@
   <div class="wrapper">
     <main>
       <div
-        class="nav__header container-fluid w-100 px-4 mb-4 d-flex align-items-center justify-content-between rounded bg-white"
-      >
+        class="nav__header container-fluid w-100 px-4 mb-4 d-flex align-items-center justify-content-between rounded bg-white">
         <div class="search__container w-100">
           <b-icon icon="search" class="mr-3"></b-icon>
-          <input
-            type="text"
-            placeholder="Search"
-            class="w-75 border-0"
-            id="filter-input"
-            v-model="filter"
-          />
+          <input type="text" placeholder="Search" class="w-75 border-0" id="filter-input" v-model="filter" />
         </div>
 
         <AppDropdown>
           <template v-slot:text>
             Admin
-            <b-icon
-              class="ml-2"
-              font-scale=".75"
-              icon="caret-down-fill"
-            ></b-icon>
+            <b-icon class="ml-2" font-scale=".75" icon="caret-down-fill"></b-icon>
           </template>
           <template v-slot:links>
             <a class="dropdown-item" @click="logout">Logout </a>
@@ -34,47 +23,23 @@
         <div class="d-flex justify-content-between mt-2 mb-4">
           <h4>Requests</h4>
           <div>
-            <b-button
-              v-if="selectedRow[0] && selectedBookData.no_of_copies > 0"
-              v-b-modal.addReaderModal
-              class="mr-2 success-btn"
-            >
+            <b-button v-if="selectedRow[0] && selectedBookData.no_of_copies > 0" v-b-modal.addReaderModal
+              class="mr-2 success-btn">
               <b-icon icon="check2-circle" scale=".85"></b-icon>
-              Approve</b-button
-            >
-            <b-button
-              @click="removeRequest(selectedRequest.request_id)"
-              v-if="selectedRow[0]"
-              class="mr-2 warning-btn"
-              v-b-modal.rejectRequestModal
-            >
+              Approve</b-button>
+            <b-button @click="removeRequest(selectedRequest.request_id)" v-if="selectedRow[0]" class="mr-2 warning-btn"
+              v-b-modal.rejectRequestModal>
               <b-icon icon="x-octagon" scale=".85"></b-icon>
-              Reject</b-button
-            >
+              Reject</b-button>
           </div>
         </div>
 
-        <b-table
-          :items="items"
-          :per-page="perPage"
-          :fields="fields"
-          :current-page="currentPage"
-          label-sort-asc=""
-          label-sort-desc=""
-          label-sort-clear=""
-          fixed
-          responsive
-          :filter="filter"
-          select-mode="single"
-          ref="selectableTable"
-          selectable
-          @row-selected="onRowSelected"
-          @filtered="onFiltered"
-        >
+        <b-table :items="items" :per-page="perPage" :fields="fields" :current-page="currentPage" label-sort-asc=""
+          label-sort-desc="" label-sort-clear="" fixed responsive :filter="filter" select-mode="single"
+          ref="selectableTable" selectable @row-selected="onRowSelected" @filtered="onFiltered">
           <template #cell(request_id)="row">
             <template v-if="row.item.request_id.length == 1">
-              <span>00</span></template
-            >
+              <span>00</span></template>
             <template v-else-if="row.item.request_id.length > 1">
               <span>0</span>
             </template>
@@ -83,13 +48,8 @@
           </template>
         </b-table>
 
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          aria-controls="my-table"
-          class="mt-3 mb-0 justify-content-center"
-        ></b-pagination>
+        <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" aria-controls="my-table"
+          class="mt-3 mb-0 justify-content-center"></b-pagination>
       </div>
     </main>
 
@@ -103,23 +63,13 @@
             <br />
             <i>{{ selectedRequest.title }}</i>
           </div>
-          <div
-            class="pt-0"
-            :class="{
-              'input-group--error': $v.issuedBook.reader_name.$error,
-            }"
-          >
-            <b-input
-              v-model="issuedBook.reader_name"
-              id="request_name"
-              placeholder="Reader's Full Name"
-            ></b-input>
-            <p
-              class="error-message"
-              v-if="
-                submitStatus === 'error' && !$v.issuedBook.reader_name.required
-              "
-            >
+          <div class="pt-0" :class="{
+            'input-group--error': $v.issuedBook.reader_name.$error,
+          }">
+            <b-input v-model="issuedBook.reader_name" id="request_name" placeholder="Reader's Full Name"></b-input>
+            <p class="error-message" v-if="
+              submitStatus === 'error' && !$v.issuedBook.reader_name.required
+            ">
               Reader's name is required.
             </p>
           </div>
@@ -247,12 +197,7 @@ export default {
       } else {
         this.$store
           .dispatch("addIssuedBook", this.issuedBook)
-          .then(() => {
-            this.rerenderModal();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+
         this.selectedBookData.no_of_copies--;
         this.editBook(this.selectedBookData.isbn, this.selectedBookData);
         this.removeRequest(this.selectedRequest.request_id);
@@ -261,28 +206,12 @@ export default {
     editBook(isbn, book) {
       this.$store
         .dispatch("editBook", { isbn, book })
-        .then(() => {
-          this.rerenderModal();
-          setTimeout(() => {
-            this.$router.go(0);
-          }, 700);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
     },
     removeRequest(id) {
       this.$store
         .dispatch("removeRequest", id)
-        .then(() => {
-          this.rerenderModal();
-          setTimeout(() => {
-            this.$router.go(0);
-          }, 700);
-        })
-        .catch(() => {
-          console.log("There was a problem marking the request as inactive.");
-        });
+
     },
     sevenDaysFromNow() {
       return new Date(
@@ -295,14 +224,12 @@ export default {
       ).toLocaleDateString();
     },
     logout() {
-      this.$store.dispatch("logout").then(() => {
-        setTimeout(() => {
-          this.$router.go(0);
-        }, 1000);
-      });
+      this.$store.dispatch("logout")
     },
   },
 };
 </script>
 
-<style></style>
+<style>
+
+</style>

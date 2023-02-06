@@ -2,46 +2,23 @@
   <div class="wrapper">
     <main>
       <div
-        class="nav__header container-fluid w-100 px-4 mb-4 d-flex align-items-center justify-content-between rounded bg-white"
-      >
+        class="nav__header container-fluid w-100 px-4 mb-4 d-flex align-items-center justify-content-between rounded bg-white">
         <div class="search__container w-100">
           <b-icon icon="search" class="mr-3"></b-icon>
-          <input
-            type="text"
-            placeholder="Search"
-            class="w-75 border-0"
-            id="filter-input"
-            v-model="filter"
-          />
+          <input type="text" placeholder="Search" class="w-75 border-0" id="filter-input" v-model="filter" />
         </div>
 
-        <b-button class="rounded primary-btn" v-b-modal.loginModal
-          >Login</b-button
-        >
+        <b-button class="rounded primary-btn" v-b-modal.loginModal>Login</b-button>
       </div>
 
       <div class="table__container p-4 pt-3 rounded">
         <div class="d-flex mt-2 mb-4">
           <h4>Books</h4>
         </div>
-        <b-table
-          :items="items"
-          :per-page="perPage"
-          :fields="fields"
-          :current-page="currentPage"
-          label-sort-asc=""
-          label-sort-desc=""
-          label-sort-clear=""
-          responsive
-          :filter="filter"
-          @filtered="onFiltered"
-        >
+        <b-table :items="items" :per-page="perPage" :fields="fields" :current-page="currentPage" label-sort-asc=""
+          label-sort-desc="" label-sort-clear="" responsive :filter="filter" @filtered="onFiltered">
           <template #cell(actions)="row">
-            <b-button
-              size="sm"
-              @click="row.toggleDetails"
-              class="mr-2 secondary-btn"
-            >
+            <b-button size="sm" @click="row.toggleDetails" class="mr-2 secondary-btn">
               {{ row.detailsShowing ? "Hide" : "Show" }} Details
             </b-button>
           </template>
@@ -53,96 +30,76 @@
                   <h4 class="mb-3">
                     {{ row.item.title }}
                   </h4>
-                  <b-icon
-                    @click="row.toggleDetails"
-                    class="h6 mt-1"
-                    icon="x-lg"
-                  ></b-icon>
+                  <b-icon @click="row.toggleDetails" class="h6 mt-1" icon="x-lg"></b-icon>
                 </div>
 
                 <div class="mb-3">
-                  <b-badge
-                    pill
-                    v-if="row.item.no_of_copies > 0"
-                    class="bg-success"
-                    >AVAILABLE: <b>{{ row.item.no_of_copies }}</b></b-badge
-                  >
-                  <b-badge
-                    pill
-                    v-else-if="row.item.no_of_copies == 0"
-                    class="bg-light text-secondary"
-                    >NOT AVAILABLE</b-badge
-                  >
+                  <b-badge pill v-if="row.item.no_of_copies > 0" class="bg-success">AVAILABLE: <b>{{
+                    row.item.no_of_copies
+                  }}</b></b-badge>
+                  <b-badge pill v-else-if="row.item.no_of_copies == 0" class="bg-light text-secondary">NOT
+                    AVAILABLE</b-badge>
                 </div>
 
                 <b-card-text>{{ row.item.description }}</b-card-text>
 
                 <b-list-group class="mb-3">
-                  <b-list-group-item
-                    ><b>ISBN:</b> {{ row.item.isbn }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Author:</b> {{ row.item.author }}
+                  <b-list-group-item><b>ISBN:</b> {{ row.item.isbn }}</b-list-group-item>
+                  <b-list-group-item><b>Author:</b> {{ row.item.author }}
                   </b-list-group-item>
-                  <b-list-group-item
-                    ><b>Publisher:</b>
-                    {{ row.item.publisher_name }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Publication Year:</b>
-                    {{ row.item.publication_year }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Categories:</b>
+                  <b-list-group-item><b>Publisher:</b>
+                    {{ row.item.publisher_name }}</b-list-group-item>
+                  <b-list-group-item><b>Publication Year:</b>
+                    {{ row.item.publication_year }}</b-list-group-item>
+                  <b-list-group-item><b>Categories:</b>
                     <b-badge pill class="bg-light text-dark ms-2">{{
                       row.item.category_name
                     }}</b-badge>
                   </b-list-group-item>
-                  <b-list-group-item
-                    ><b>No. of Pages:</b>
-                    {{ row.item.no_of_pages }}</b-list-group-item
-                  >
-                  <b-list-group-item
-                    ><b>Shelf:</b> {{ row.item.shelf }}</b-list-group-item
-                  >
+                  <b-list-group-item><b>No. of Pages:</b>
+                    {{ row.item.no_of_pages }}</b-list-group-item>
+                  <b-list-group-item><b>Shelf:</b> {{ row.item.shelf }}</b-list-group-item>
                 </b-list-group>
 
-                <b-button
-                  @click="getSelectedBook(row.item.isbn)"
-                  v-if="row.item.no_of_copies > 0"
-                  class="mx-auto rounded-pill primary-btn"
-                >
+                <b-button @click="getSelectedBook(row.item.isbn)" v-if="row.item.no_of_copies > 0"
+                  class="mx-auto rounded-pill primary-btn">
                   Borrow
                 </b-button>
               </b-card-body>
-            </b-card> </template
-          >user
+            </b-card> </template>user
         </b-table>
 
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          aria-controls="my-table"
-          class="mt-3 mb-0 justify-content-center"
-        ></b-pagination>
+        <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" aria-controls="my-table"
+          class="mt-3 mb-0 justify-content-center"></b-pagination>
       </div>
 
       <AppModal modalId="loginModal" modalSize="md" hideFooter :key="modalKey">
         <template #modal-header> Login </template>
         <template #modal-body>
           <form class="px-2" @submit.prevent="login">
-            <div class="mb-3 pt-0">
+            <div class="mb-3 pt-0" :class="{
+              'input-group--error': $v.username.$error,
+            }">
               <label for="username">Username</label>
               <b-input id="username" v-model="username"></b-input>
+              <p class="error-message" v-if="
+                submitStatus === 'error' &&
+                !$v.username.required
+              ">
+                Username is required.
+              </p>
             </div>
-            <div class="mb-2">
+            <div class="mb-2" :class="{
+              'input-group--error': $v.password.$error,
+            }">
               <label for="password">Password</label>
-              <b-form-input
-                type="password"
-                id="password"
-                v-model="password"
-              ></b-form-input>
+              <b-form-input type="password" id="password" v-model="password"></b-form-input>
+              <p class="error-message" v-if="
+  submitStatus === 'error' &&
+  !$v.password.required
+              ">
+                Password is required.
+              </p>
             </div>
             <div class="w-100 mt-4 d-flex justify-content-center">
               <b-button class="rounded-pill w-25 primary-btn" type="submit">
@@ -158,6 +115,7 @@
 
 <script>
 import AppModal from "@/components/AppModal.vue";
+import { required } from "vuelidate/lib/validators";
 import { mapState, mapGetters } from "vuex";
 
 export default {
@@ -196,7 +154,16 @@ export default {
       selectedIsbn: "",
       username: "",
       password: "",
+      submitStatus: null
     };
+  },
+  validations: {
+    username: {
+      required
+    },
+    password: {
+      required
+    }
   },
   created() {
     this.$store.dispatch("fetchBooks");
@@ -214,14 +181,6 @@ export default {
     addRequest() {
       this.$store
         .dispatch("addRequest", this.request)
-        .then(() => {
-          setTimeout(() => {
-            this.$router.go(0);
-          }, 700);
-        })
-        .catch((error) => {
-          console.log("there was a problem", error);
-        });
     },
     getSelectedBook(isbn) {
       this.selectedIsbn = isbn;
@@ -235,16 +194,17 @@ export default {
       this.addRequest();
     },
     login() {
-      this.$store
-        .dispatch("login", {
-          username: this.username,
-          password: this.password,
-        })
-        .then(() => {
-          setTimeout(() => {
-            location.href = "/books";
-          }, 1500);
-        });
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.submitStatus = "error";
+      } else {
+        this.$store
+          .dispatch("login", {
+            username: this.username,
+            password: this.password,
+          })
+
+      }
     },
   },
   computed: {
